@@ -1,6 +1,6 @@
 const fs = require("fs");
 const L = require("./lib");
-const { p, h1, h2, bullet, num, spacer, table, kv, img, caption, firmas, save, money } = L;
+const { sigPara, p, h1, h2, bullet, num, spacer, table, kv, img, caption, firmas, save, money } = L;
 const D = require("./data");
 const { P, people, clave, paquetes, ptAOI, cambios, riesgos, proveedores, trabajoProv, corte, estado16, notas16, pagos16 } = D;
 
@@ -32,7 +32,7 @@ function minuta(m) {
     h1("Objetivo de la junta"), p(m.objetivo),
     h1("Asistentes"),
     table(["Nombre completo", "Puesto / rol en el proyecto", "Asistió", "Firma de confirmación"],
-      m.asistentes.map((k) => [N(k), `${people[k].puesto} — ${people[k].rol}`, "Sí", ""]), [30, 38, 10, 22], { size: 18 }),
+      m.asistentes.map((k) => [N(k), `${people[k].puesto} — ${people[k].rol}`, "Sí", sigPara(k)]), [28, 36, 9, 27], { size: 18 }),
     h1("Temas tratados"), ...m.temas.map((t) => num(t)),
     h1("Acuerdos"),
     table(["#", "Acuerdo", "Responsable", "Fecha"], m.acuerdos.map((a, i) => [String(i + 1), a[0], N(a[1]), a[2]]), [5, 55, 25, 15], { size: 18 }),
@@ -43,7 +43,7 @@ function minuta(m) {
     body.push(table(["#", "Tarea pendiente", "Responsable", "Fecha compromiso"], m.pendientes.map((a, i) => [String(i + 1), a[0], N(a[1]), a[2]]), [5, 55, 25, 15], { size: 18 }));
   }
   body.push(h1("Próxima reunión"), p(m.proximaTxt));
-  body.push(spacer(200), firmas([{ nombre: N("lider"), rol: "Elaboró · Líder del proyecto" }]));
+  body.push(spacer(200), firmas([{ nombre: N("lider"), rol: "Elaboró · Líder del proyecto", sig: "lider", fecha: m.fecha }]));
   return body;
 }
 
@@ -128,7 +128,7 @@ async function main() {
       ["Proyecto SaaS freelance del líder (2025)", "No tener fecha de término definida y no verificar las sumas del presupuesto generó retrabajo en la documentación.", "La fecha de término se fija desde el plan básico y los totales se validan antes de cada firma."],
     ], [26, 37, 37], { size: 18 }),
     spacer(300),
-    firmas([{ nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Autorizo el inicio del proyecto" }, { nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró" }]),
+    firmas([{ nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Autorizo el inicio del proyecto", sig: "dueno", fecha: "04/08/2026" }, { nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: "04/08/2026" }]),
   ] });
 
   // =============== 1.2 MINUTA INICIO ===============
@@ -160,7 +160,7 @@ async function main() {
   const pdBody = [
     kv([["Proyecto", P.nombre], ["Dueño del proyecto", NR("dueno")], ["Líder del proyecto", NR("lider")],
       ["Objetivo (del plan básico)", "Reducir el MTTR de paros no programados de la Línea SMT-2 de 20 a 17 min o menos entre el 03/08 y el 20/11/2026."],
-      ["Duración total del proyecto", P.duracion], ["Fecha de elaboración", "18/08/2026"]]),
+      ["Duración total del proyecto", P.duracion], ["Fecha de elaboración", "18/08/2026"], ["Fecha de autorización", "19/08/2026, en la junta de presentación del plan"]]),
     h1("1. Paquetes de trabajo, actividades y criterios de aceptación"),
     p("El trabajo total se divide en 12 paquetes de trabajo. Cada uno tiene sus actividades, su responsable, sus fechas y su criterio de aceptación."),
   ];
@@ -208,7 +208,7 @@ async function main() {
   pdBody.push(h1("7. Riesgos del proyecto y plan alterno"));
   pdBody.push(table(["#", "Riesgo", "Plan alterno", "Responsable"], riesgos.map((r, i) => [`R${i + 1}`, r.r, r.plan, N(r.resp)]), [6, 30, 44, 20], { size: 18 }));
   pdBody.push(spacer(300));
-  pdBody.push(firmas([{ nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Autorizo el plan detallado y el paso a la fase de implementación" }, { nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró" }]));
+  pdBody.push(firmas([{ nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Autorizo el plan detallado y el paso a la fase de implementación", sig: "dueno", fecha: "19/08/2026" }, { nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: "18/08/2026" }]));
   await save(`${D2}/2.1 Plan Detallado.docx`, { titulo: "Plan detallado del proyecto", ...meta("TL3D-2.1", E2), body: pdBody });
 
   // =============== 2.2 MINUTA PRESENTACIÓN ===============
@@ -242,7 +242,7 @@ async function main() {
       table(null, [["Tipo", v.tipo], ["Proveedores considerados", v.lista.map((x) => x.razon)], ["Experiencia requerida", v.exp]], [25, 75], { firstColFill: true, firstColBold: true, size: 18 }),
     ]),
     p("Nota: con el cambio autorizado CC-01 se agregó el paquete PT-13 (2 máquinas AOI), que se asignó a los mismos proveedores ya seleccionados (E1, E2 y E3), bajo las mismas condiciones."),
-    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró (20/08/2026)" }]),
+    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: "20/08/2026" }]),
   ] });
 
   // =============== 3.2 PROVEEDORES CALIFICADOS ===============
@@ -255,7 +255,7 @@ async function main() {
     ]),
     h2("Criterio de selección"),
     p("Se eligió la cotización más baja que cumple la experiencia requerida y la fecha del plan detallado. El segundo lugar queda como alterno (plan alterno del riesgo R1)."),
-    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró" }, { nombre: N("fin"), rol: "Contralora de Planta", leyenda: "Validó las cotizaciones" }]),
+    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: "21/08/2026" }, { nombre: N("fin"), rol: "Contralora de Planta", leyenda: "Validó las cotizaciones", sig: "fin", fecha: "21/08/2026" }]),
   ] });
 
   // =============== 3.3 DESCRIPCIÓN DEL TRABAJO POR PROVEEDOR ===============
@@ -268,7 +268,13 @@ async function main() {
           ["Limitante de tiempo", `Inicio el ${t.ini} y entrega a más tardar el ${t.fin}. Penalización: ${t.pena}.`]],
         [25, 75], { firstColFill: true, firstColBold: true, size: 18 })];
     }),
-    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró (24/08/2026)" }]),
+    h1("PT-13 · Monitoreo de 2 máquinas AOI (agregado por el cambio autorizado CC-01)"),
+    table(null, [["Proveedores", "Los mismos proveedores seleccionados: E1 (nodos y sensores), E2 (instalación) y E3 (modelado 3D)"],
+      ["Descripción del paquete de trabajo", "E1: suministrar 2 nodos ESP32 con sensores iguales a los de PT-03. E2: instalarlos en las 2 AOI durante el paro programado, con LOTO y sin intervenir el PLC. E3: modelar las 2 AOI y entregarlas integradas al archivo glTF."],
+      ["Limitante de costo", "Monto máximo de $12,600.00 MXN más IVA (E1 $5,600.00, E2 $4,200.00, E3 $2,800.00), igual al impacto económico autorizado en CC-01. Se paga en una sola exhibición contra entrega."],
+      ["Limitante de tiempo", "Del 19/10/2026 al 23/10/2026; la instalación solo en el paro programado del 19/10/2026 (alterno: 24/10/2026)."]],
+    [25, 75], { firstColFill: true, firstColBold: true, size: 18 }),
+    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró (actualizado el 16/09/2026 por CC-01)", sig: "lider", fecha: "24/08/2026" }]),
   ] });
 
   // =============== 3.4 LISTA DE VERIFICACIÓN DE AVANCE ===============
@@ -281,7 +287,7 @@ async function main() {
     const rows = allPT.filter((pt) => estado16[pt.id] === g).map((pt) => [pt.id, pt.nombre, `${pt.inicio} – ${pt.fin}`, notas16[pt.id] || "Criterio de aceptación cumplido."]);
     avBody.push(table(["ID", "Paquete de trabajo", "Fechas", "Observación"], rows, [9, 36, 22, 33], { size: 18 }));
   });
-  avBody.push(spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró" }]));
+  avBody.push(spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: corte }]));
   await save(`${D3}/3.4 Lista de verificación de avance.docx`, { titulo: "Lista de verificación de avance del proyecto", ...meta("TL3D-3.4", E3), body: avBody });
 
   // =============== 3.5 EVIDENCIAS ===============
@@ -304,7 +310,7 @@ async function main() {
     table(["Paquete", "Evidencia"], ev.map((e) => [e[0], e[1]]), [12, 88], { size: 18 }), h1("Evidencias gráficas")];
   ev.filter((e) => e[2]).forEach((e) => { evBody.push(h2(`${e[0]} ${allPT.find((x) => x.id === e[0]).nombre}`)); evBody.push(img(`img/${e[2][0]}`, e[2][1], e[2][2])); evBody.push(caption(e[2][3])); });
   evBody.push(h2("Arquitectura del sistema entregado")); evBody.push(img("img/arquitectura.png", 6.3, 2.65)); evBody.push(caption("Arquitectura de TwinLine 3D."));
-  evBody.push(spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Integró las evidencias (18/11/2026)" }]));
+  evBody.push(spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Integró las evidencias", sig: "lider", fecha: "18/11/2026" }]));
   await save(`${D3}/3.5 Evidencias de paquetes terminados.docx`, { titulo: "Evidencias de paquetes de trabajo terminados", ...meta("TL3D-3.5", E3), body: evBody });
 
   // =============== 4.1 LISTADO DE CAMBIOS AUTORIZADOS ===============
@@ -317,7 +323,7 @@ async function main() {
     cbBody.push(h2(`${c.num} · ${c.nombre}`));
     cbBody.push(table(null, [["No. consecutivo de la solicitud", c.num], ["Fecha de la solicitud", c.fechaSol], ["Descripción del cambio", c.desc], ["Impacto económico", money(c.costo) + " MXN"], ["Impacto en tiempo", c.tiempo],
       ["Fecha de programación", c.prog], ["Solicita", NR(c.solicita)], ["Autoriza", NR(c.autoriza)]], [28, 72], { firstColFill: true, firstColBold: true, size: 18 }));
-    cbBody.push(spacer(80), firmas([{ nombre: N(c.autoriza), rol: "Dueño del proyecto", leyenda: `Autorizo el cambio ${c.num}` }]));
+    cbBody.push(spacer(80), firmas([{ nombre: N(c.autoriza), rol: "Dueño del proyecto", leyenda: `Autorizo el cambio ${c.num}`, sig: c.autoriza, fecha: c.fechaAut }]));
   });
   await save(`${D4}/4.1 Listado de cambios autorizados.docx`, { titulo: "Listado de cambios autorizados", ...meta("TL3D-4.1", E4), body: cbBody });
 
@@ -326,7 +332,7 @@ async function main() {
   const pagado = Object.values(pagos16).reduce((a, b) => a + b, 0);
   await save(`${D4}/4.2 Reporte de estado actual del proyecto.docx`, { titulo: "Reporte de estado actual del proyecto", ...meta("TL3D-4.2", E4), body: [
     kv([["Fecha de corte", corte], ["Elaboró", `${N("lider")} — Líder del proyecto`], ["Semana del proyecto", "11 de 16"],
-      ["Estado actual del proyecto", "EN TIEMPO. Avance real de 68% contra 66% planeado. La fecha de término (20/11/2026) se mantiene."]]),
+      ["Estado actual del proyecto", "EN TIEMPO. Avance real de 68% contra 66% planeado (avance medido por valor ganado: costo de los paquetes terminados y la parte avanzada de los paquetes en proceso, entre el costo vigente). La fecha de término (20/11/2026) se mantiene."]]),
     h1("Estado de los paquetes de trabajo"),
     table(["Paquete", "Estado", "Observación"], allPT.map((pt) => [`${pt.id} ${pt.nombre}`, estado16[pt.id], notas16[pt.id] || "En tiempo; criterio cumplido."]), [45, 15, 40], { size: 17 }),
     h1("Estado de cuenta del costo del proyecto"),
@@ -353,7 +359,7 @@ async function main() {
       ["R6 Vulnerabilidad de ciberseguridad", "Hacer un escaneo de puertos y una revisión de la VLAN con TI antes del piloto", N("ti"), "30/10/2026"],
       ["R2 Que no haya paro para instalar las AOI", "Confirmar el paro del 19/10; si se cancela, usar el paro del 24/10", N("prod"), "17/10/2026"],
     ], [27, 39, 20, 14], { size: 17 }),
-    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró" }, { nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Recibió" }]),
+    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: corte }, { nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Recibió", sig: "dueno", fecha: corte }]),
   ] });
 
   // =============== 4.3 VERIFICACIÓN DE PAQUETES TERMINADOS ===============
@@ -362,7 +368,7 @@ async function main() {
     table(["Paquete", "Criterio de aceptación", "Resultado de la verificación", "Cumple"], allPT.map((pt) => [`${pt.id} ${pt.nombre}`, pt.criterio,
       pt.id === "PT-09" ? "Cancelado por el cambio autorizado CC-03; no aplica." : ({ "PT-05": "Pérdida promedio de 0.34%.", "PT-06": "11.8 MB; carga en 3.6 s.", "PT-07": "Actualización cada 2 s.", "PT-08": "Alerta en 9 s promedio (máximo 21 s).", "PT-10": "MTTR de 16.5 min; 0 incidentes.", "PT-11": "11 personas; promedio de 9.1/10; mínima de 8.0." }[pt.id] || "Evidencia revisada y conforme."),
       pt.id === "PT-09" ? "N/A" : "Sí"]), [22, 36, 30, 12], { size: 17 }),
-    spacer(300), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Acepto y valido la verificación del trabajo" }]),
+    spacer(300), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Acepto y valido la verificación del trabajo", sig: "lider", fecha: "18/11/2026" }]),
   ] });
 
   // =============== 5.1 REPORTE FINAL ===============
@@ -406,7 +412,7 @@ async function main() {
     h1("4. Archivos generados durante el proyecto"),
     table(["Archivo", "Código"], archivos, [80, 20], { size: 17 }),
     spacer(300),
-    firmas([{ nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Acepto el reporte final y el cierre del proyecto" }, { nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró" }]),
+    firmas([{ nombre: N("dueno"), rol: "Dueño del proyecto", leyenda: "Acepto el reporte final y el cierre del proyecto", sig: "dueno", fecha: "20/11/2026" }, { nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: "20/11/2026" }]),
   ] });
 
   // =============== 5.2 MINUTA CIERRE ===============

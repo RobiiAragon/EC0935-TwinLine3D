@@ -40,7 +40,7 @@ MATRIZ_EC0935.md             Cada criterio del estándar → documento donde se 
 La [**matriz de cumplimiento**](MATRIZ_EC0935.md) relaciona **cada criterio de evaluación** de los 5 elementos con el documento y la sección que lo cubre, e incluye la tabla de errores del proyecto de referencia que se corrigieron.
 
 ## Firmas
-Los documentos tienen sus bloques de firma (dueño, líder y asistentes) en blanco, para firmarlos a mano después de imprimirlos.
+Los documentos ya están firmados. La firma del líder es la mía, tomada de los documentos de Deko3D. Las firmas del dueño y de los demás participantes son **simuladas**, igual que esas personas (se generan con `fuente/sigs.py`). Las imágenes originales de las firmas no se suben al repo (`fuente/sig/` está en `.gitignore`).
 
 ## Regenerar los documentos
 ```bash

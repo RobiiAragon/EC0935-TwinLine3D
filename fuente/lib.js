@@ -50,6 +50,15 @@ function img(path, wIn, hIn) {
 }
 const caption = (t) => new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: t, italics: true, size: 17, color: "555555" })], spacing: { after: 200 } });
 
+
+const sizeOf = (buf) => ({ w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) });
+function sigRun(key, hIn) {
+  const buf = fs.readFileSync(`sig/${key}.png`); const { w, h } = sizeOf(buf);
+  let H = hIn * 96, Wd = (w / h) * H; if (Wd > 200) { Wd = 200; H = (h / w) * Wd; }
+  return new ImageRun({ type: "png", data: buf, transformation: { width: Math.round(Wd), height: Math.round(H) } });
+}
+const sigPara = (key) => new Paragraph({ alignment: AlignmentType.CENTER, children: [sigRun(key, 0.42)] });
+
 // bloque de firmas: [{nombre, rol, leyenda?}]
 function firmas(list) {
   const w = Math.floor(W / list.length);
@@ -58,10 +67,12 @@ function firmas(list) {
   const cells = list.map((f) => new TableCell({ width: { size: w, type: WidthType.DXA }, borders: nb, margins: { left: 200, right: 200 },
     children: [
       ...(f.leyenda ? [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: f.leyenda, size: 17, italics: true })], spacing: { after: 80 } })] : []),
-      new Paragraph({ children: [], spacing: { before: 700 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "333333", space: 1 } } }),
+      f.sig ? new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 60 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "333333", space: 1 } },
+          children: [sigRun(f.sig, 0.62)] })
+        : new Paragraph({ children: [], spacing: { before: 700 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "333333", space: 1 } } }),
       new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: f.nombre, bold: true, size: 19 })], spacing: { before: 60 } }),
       new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: f.rol, size: 18 })] }),
-      new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Firma y fecha", size: 16, color: "777777" })] }),
+      new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: f.fecha ? "Fecha: " + f.fecha : "Firma y fecha", size: 16, color: "777777" })] }),
     ] }));
   return new Table({ width: { size: w * list.length, type: WidthType.DXA }, columnWidths: list.map(() => w), rows: [new TableRow({ cantSplit: true, children: cells })] });
 }
@@ -103,4 +114,4 @@ async function save(path, { titulo, codigo, elemento, body, proyecto }) {
   fs.writeFileSync(path, await Packer.toBuffer(doc));
 }
 
-module.exports = { p, h1, h2, bullet, num, spacer, table, kv, img, caption, firmas, save, money, runs, Paragraph, TextRun };
+module.exports = { sigPara, p, h1, h2, bullet, num, spacer, table, kv, img, caption, firmas, save, money, runs, Paragraph, TextRun };

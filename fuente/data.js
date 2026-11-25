@@ -81,13 +81,13 @@ const ptAOI = { id: "PT-13", nombre: "Monitoreo de 2 máquinas AOI (agregado por
   costo: [["2 nodos y sensores (proveedor E1)", 5600], ["Instalación (proveedor E2)", 4200], ["Modelado 3D de 2 máquinas (proveedor E3)", 2800]] };
 
 const cambios = [
-  { num: "CC-01", nombre: "Agregar 2 máquinas AOI al monitoreo", fechaSol: "15/09/2026", solicita: "prod", autoriza: "dueno",
+  { num: "CC-01", nombre: "Agregar 2 máquinas AOI al monitoreo", fechaSol: "15/09/2026", fechaAut: "16/09/2026", solicita: "prod", autoriza: "dueno",
     desc: "Incluir las 2 máquinas de inspección óptica automática (AOI) de la Línea SMT-2, que no estaban en el inventario original. Con esto el sistema pasa de 12 a 14 máquinas. Se crea el paquete PT-13.",
     costo: 12600, tiempo: "+5 días hábiles en paralelo dentro de la holgura (19/10 – 23/10); no cambia la fecha de término.", prog: "19/10/2026" },
-  { num: "CC-02", nombre: "Cambiar el canal de alertas a Microsoft Teams", fechaSol: "05/10/2026", solicita: "ti", autoriza: "dueno",
+  { num: "CC-02", nombre: "Cambiar el canal de alertas a Microsoft Teams", fechaSol: "05/10/2026", fechaAut: "06/10/2026", solicita: "ti", autoriza: "dueno",
     desc: "Por política de TI, las alertas se envían por Microsoft Teams corporativo en lugar de Telegram. Esto requiere 8 h más de desarrollo en PT-08.",
     costo: 2800, tiempo: "+2 días hábiles en PT-08 (término 27/10/2026); no cambia la fecha de término del proyecto.", prog: "12/10/2026" },
-  { num: "CC-03", nombre: "Cancelar la integración con ERP", fechaSol: "08/10/2026", solicita: "dueno", autoriza: "dueno",
+  { num: "CC-03", nombre: "Cancelar la integración con ERP", fechaSol: "08/10/2026", fechaAut: "08/10/2026", solicita: "dueno", autoriza: "dueno",
     desc: "El corporativo migrará su ERP en 2027 y congeló sus integraciones. Se cancela el paquete PT-09 y se reprograma como un proyecto futuro.",
     costo: -14000, tiempo: "−5 días hábiles de trabajo del líder; no cambia la fecha de término.", prog: "08/10/2026" },
 ];
