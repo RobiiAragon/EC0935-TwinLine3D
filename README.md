@@ -30,7 +30,7 @@ Cada documento viene en **.docx** (editable) y **.pdf** (para entregar).
 4. Verificacion/      E2925  4.1 Cambios autorizados · 4.2 Estado actual · 4.3 Verificación de paquetes
 5. Finalizacion/      E2926  5.1 Reporte final · 5.2 Minuta junta de cierre
 evidencias/img/              Capturas y gráficas usadas como evidencia
-anexos/                      Lista de anexos de soporte
+anexos/                      A-02 a A-12: actas, reportes y registros firmados
 viewer/                      Código del visor 3D de referencia (Three.js)
 fuente/                      Scripts que generan todos los documentos
 MATRIZ_EC0935.md             Cada criterio del estándar → documento donde se cumple
@@ -48,6 +48,7 @@ cd fuente
 npm i docx                      # generador de .docx
 python3 imgs.py                 # gráficas en fuente/img/
 node build.js ../salida         # crea las 5 carpetas con los .docx
+node anexos.js ../salida        # crea los anexos A-02 a A-12
 # PDF: soffice --headless --convert-to pdf *.docx (en cada carpeta)
 ```
 Los datos (personas, paquetes, costos y cambios) están en `fuente/data.js`; los totales se calculan y se validan automáticamente.

@@ -236,13 +236,14 @@ async function main() {
 
   // =============== 3.1 LISTA DE PAQUETES POR EXTERNOS ===============
   await save(`${D3}/3.1 Lista de paquetes de trabajo por externos.docx`, { titulo: "Lista de paquetes de trabajo a realizar por externos", ...meta("TL3D-3.1", E3), body: [
+    p("Control de versiones: Revisión 1 del 20/08/2026 (paquetes PT-03, PT-04 y PT-06). Revisión 2 del 16/09/2026 (se agrega PT-13 por el cambio autorizado CC-01).", { run: { size: 18, italics: true } }),
     p("Paquetes del plan detallado que realizará un externo, con los proveedores considerados y la experiencia que se les pide."),
     ...Object.entries(proveedores).flatMap(([k, v]) => [
       h2(`${k} · ${v.paquete}`),
       table(null, [["Tipo", v.tipo], ["Proveedores considerados", v.lista.map((x) => x.razon)], ["Experiencia requerida", v.exp]], [25, 75], { firstColFill: true, firstColBold: true, size: 18 }),
     ]),
     p("Nota: con el cambio autorizado CC-01 se agregó el paquete PT-13 (2 máquinas AOI), que se asignó a los mismos proveedores ya seleccionados (E1, E2 y E3), bajo las mismas condiciones."),
-    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró", sig: "lider", fecha: "20/08/2026" }]),
+    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró (Revisión 2)", sig: "lider", fecha: "16/09/2026" }]),
   ] });
 
   // =============== 3.2 PROVEEDORES CALIFICADOS ===============
@@ -260,6 +261,7 @@ async function main() {
 
   // =============== 3.3 DESCRIPCIÓN DEL TRABAJO POR PROVEEDOR ===============
   await save(`${D3}/3.3 Descripción del trabajo por proveedor.docx`, { titulo: "Descripción del trabajo a realizar por proveedor", ...meta("TL3D-3.3", E3), body: [
+    p("Control de versiones: Revisión 1 del 24/08/2026 (E1, E2 y E3). Revisión 2 del 16/09/2026 (se agrega PT-13 por el cambio autorizado CC-01).", { run: { size: 18, italics: true } }),
     ...Object.entries(trabajoProv).flatMap(([k, t]) => {
       const sel = proveedores[k].lista.find((x) => x.sel);
       return [h1(`${k} · ${proveedores[k].paquete}`),
@@ -274,7 +276,7 @@ async function main() {
       ["Limitante de costo", "Monto máximo de $12,600.00 MXN más IVA (E1 $5,600.00, E2 $4,200.00, E3 $2,800.00), igual al impacto económico autorizado en CC-01. Se paga en una sola exhibición contra entrega."],
       ["Limitante de tiempo", "Del 19/10/2026 al 23/10/2026; la instalación solo en el paro programado del 19/10/2026 (alterno: 24/10/2026)."]],
     [25, 75], { firstColFill: true, firstColBold: true, size: 18 }),
-    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró (actualizado el 16/09/2026 por CC-01)", sig: "lider", fecha: "24/08/2026" }]),
+    spacer(200), firmas([{ nombre: N("lider"), rol: "Líder del proyecto", leyenda: "Elaboró (Revisión 2)", sig: "lider", fecha: "16/09/2026" }]),
   ] });
 
   // =============== 3.4 LISTA DE VERIFICACIÓN DE AVANCE ===============
@@ -293,20 +295,20 @@ async function main() {
   // =============== 3.5 EVIDENCIAS ===============
   const ev = [
     ["PT-01", "Plan básico (TL3D-1.1), plan detallado (TL3D-2.1) y reportes de junta (TL3D-1.2 y TL3D-2.2), firmados.", null],
-    ["PT-02", "Documento de requerimientos e inventario de 12 máquinas firmado por el dueño (anexo A-02).", null],
-    ["PT-03", "Factura y lista de recepción de 14 nodos (anexo A-03).", null],
-    ["PT-04", "Certificado de instalación del contratista E2 con el esquema por máquina (anexo A-04).", ["instalacion.png", 6.2, 2.2, "Esquema de instalación por máquina."]],
-    ["PT-05", "Resultado de la prueba de transmisión de 48 h: pérdida promedio de 0.34% (anexo A-05).", ["prueba48h.png", 6.2, 2.35, "Prueba de 48 h: todas las máquinas por debajo del 1%."]],
-    ["PT-06", "Archivo twinline_smt2.glb (11.8 MB) con 12 máquinas identificadas; carga en 3.6 s en la tablet (anexo A-06).", null],
-    ["PT-07", "Captura del visor 3D en operación con colores por estado (anexo A-07).", ["visor3d.png", 6.4, 3.47, "Captura del visor 3D TwinLine (Three.js) en la pantalla de la línea."]],
-    ["PT-08", "Captura del tablero de MTTR y alerta en Microsoft Teams; tiempo promedio de alerta de 9 s (anexo A-08).", ["tablero_mttr.png", 6.2, 2.48, "Tablero de indicadores durante el piloto."]],
+    ["PT-02", "Anexo A-02: documento de requerimientos e inventario de 12 máquinas, firmado por el dueño.", null],
+    ["PT-03", "Anexo A-03: acta de recepción e inspección de material (14 nodos y sensores).", null],
+    ["PT-04", "Anexo A-04: acta de entrega-recepción de la instalación en 12 máquinas, con el esquema por máquina.", ["instalacion.png", 6.2, 2.2, "Esquema de instalación por máquina (anexo A-04)."]],
+    ["PT-05", "Anexo A-05: reporte de la prueba de transmisión de 48 h, con pérdida promedio de 0.34%.", ["prueba48h.png", 6.2, 2.35, "Prueba de 48 h: todas las máquinas por debajo del 1%."]],
+    ["PT-06", "Anexo A-06: acta de aceptación del modelo 3D (11.8 MB, 12 máquinas identificadas, carga en 3.6 s).", null],
+    ["PT-07", "Anexo A-07: captura del visor 3D en operación, con colores por estado.", ["visor3d.png", 6.4, 3.47, "Captura del visor 3D TwinLine (Three.js) en la pantalla de la línea."]],
+    ["PT-08", "Anexo A-07: captura del tablero de MTTR; tiempo promedio de alerta en Teams de 9 s (anexo A-10).", ["tablero_mttr.png", 6.2, 2.48, "Tablero de indicadores durante el piloto."]],
     ["PT-09", "Cancelado por el cambio autorizado CC-03 (ver TL3D-4.1). No genera evidencia.", null],
-    ["PT-10", "Reporte del piloto: 31 paros, MTTR ponderado de 16.5 min (−17.5% contra la línea base) y 0 incidentes de seguridad (anexo A-10).", null],
-    ["PT-11", "Lista de asistencia de 11 personas y evaluación práctica con promedio de 9.1/10 (anexo A-11).", ["capacitacion.png", 6.2, 2.2, "Calificaciones de la evaluación práctica (mínimo 8/10)."]],
-    ["PT-12", "Manual técnico y de usuario, actas de cierre de contratos y reporte final (TL3D-5.1).", null],
-    ["PT-13", "Las 2 AOI visibles en el visor 3D (AOI-1 y AOI-2 en la captura de PT-07) y certificado de instalación complementario.", null],
+    ["PT-10", "Anexo A-10: reporte del piloto con 31 paros, MTTR ponderado de 16.5 min (−17.5%) y 0 incidentes de seguridad.", null],
+    ["PT-11", "Anexo A-11: lista de asistencia de 11 personas y evaluación práctica (promedio de 9.1/10).", ["capacitacion.png", 6.2, 2.2, "Calificaciones de la evaluación práctica (mínimo 8/10)."]],
+    ["PT-12", "Anexo A-12: acta de cierre de contratos y entrega de manuales, con la guía rápida de usuario; reporte final (TL3D-5.1).", null],
+    ["PT-13", "Anexo A-04 (sección AOI) y anexo A-07: las AOI-1 y AOI-2 visibles en el visor 3D.", null],
   ];
-  const evBody = [p("Evidencias de todos los paquetes de trabajo contemplados en el plan detallado y de los paquetes agregados por cambios autorizados. Los anexos (fotografías, documentos y archivos) están en la carpeta **anexos/** del expediente."),
+  const evBody = [p("Evidencias de todos los paquetes de trabajo contemplados en el plan detallado y de los paquetes agregados por cambios autorizados. Los anexos (documentos, capturas y registros) están en la carpeta **anexos/** del expediente, en .docx y .pdf."),
     table(["Paquete", "Evidencia"], ev.map((e) => [e[0], e[1]]), [12, 88], { size: 18 }), h1("Evidencias gráficas")];
   ev.filter((e) => e[2]).forEach((e) => { evBody.push(h2(`${e[0]} ${allPT.find((x) => x.id === e[0]).nombre}`)); evBody.push(img(`img/${e[2][0]}`, e[2][1], e[2][2])); evBody.push(caption(e[2][3])); });
   evBody.push(h2("Arquitectura del sistema entregado")); evBody.push(img("img/arquitectura.png", 6.3, 2.65)); evBody.push(caption("Arquitectura de TwinLine 3D."));
@@ -380,7 +382,7 @@ async function main() {
     ["3. Implementacion/3.5 Evidencias de paquetes terminados", "TL3D-3.5"], ["4. Verificacion/4.1 Listado de cambios autorizados", "TL3D-4.1"],
     ["4. Verificacion/4.2 Reporte de estado actual del proyecto", "TL3D-4.2"], ["4. Verificacion/4.3 Verificación de paquetes terminados", "TL3D-4.3"],
     ["5. Finalizacion/5.1 Reporte final del proyecto", "TL3D-5.1"], ["5. Finalizacion/5.2 Minuta junta de cierre", "TL3D-5.2"],
-    ["anexos/ (A-02 a A-11: requerimientos, facturas, certificados, pruebas, capacitación)", "Anexos"], ["evidencias/img/ (capturas y gráficas)", "Imágenes"],
+    ["anexos/A-02 Requerimientos e inventario de máquinas", "A-02"], ["anexos/A-03 Acta de recepción de material", "A-03"], ["anexos/A-04 Acta de entrega de la instalación", "A-04"], ["anexos/A-05 Reporte de prueba de 48 h", "A-05"], ["anexos/A-06 Acta de aceptación del modelo 3D", "A-06"], ["anexos/A-07 Capturas del visor y del tablero", "A-07"], ["anexos/A-10 Reporte del piloto", "A-10"], ["anexos/A-11 Registro de capacitación", "A-11"], ["anexos/A-12 Cierre de contratos y entrega de manuales", "A-12"], ["evidencias/img/ (capturas y gráficas)", "Imágenes"],
     ["viewer/ (código fuente del visor 3D de referencia)", "Código"],
   ];
   await save(`${D5}/5.1 Reporte final del proyecto.docx`, { titulo: "Reporte final del proyecto", ...meta("TL3D-5.1", E5), body: [
@@ -398,7 +400,7 @@ async function main() {
       ["PT-09 (cancelado, sin costo)", money(0), money(0), money(0)],
       ["TOTAL", money(totalFinal), money(totalFinal), money(0)],
     ], [46, 18, 18, 18], { size: 17, right: [1, 2, 3], totalRows: [allPT.length] }),
-    p(`Costo autorizado: ${money(autorizadoTotal)} · Costo final: ${money(totalFinal)} · Ahorro contra lo autorizado: ${money(autorizadoTotal - totalFinal)}. Contratos cerrados: E1 (garantía vigente al 28/08/2027), E2 y E3, con actas de finiquito firmadas el 19/11/2026.`, { run: { size: 19 } }),
+    p(`Costo autorizado: ${money(autorizadoTotal)} · Costo final: ${money(totalFinal)} · Ahorro contra lo autorizado: ${money(autorizadoTotal - totalFinal)}. Contratos cerrados: E1 (garantía vigente al 28/08/2027), E2 y E3, según el acta de cierre del 19/11/2026 (anexo A-12).`, { run: { size: 19 } }),
     h1("3. Reporte de aprendizajes"),
     h2("Qué volvería a hacer igual"),
     ...["Usar sensores no invasivos: evitó tocar el PLC y la garantía del fabricante, y la instalación se hizo en 2 semanas.",

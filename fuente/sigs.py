@@ -32,3 +32,8 @@ src = Image.open("/tmp/sig/m1-002.png").convert("RGB")
 trans(src, (10, 10, 10)).save("sig/lider.png")
 for n in ["dueno","mant","prod","ti","fin","lider"]:
     im = Image.open(f"sig/{n}.png"); print(n, im.size)
+# Asistentes de capacitación (A-11)
+asist = ["R. Domínguez", "J. L. Arreola", "Brenda Soto", "I. Ruelas", "C. Félix", "Martha Rosas", "D. Valle", "K. Moreno", None, "H. Ayala", "Gaby Torres"]
+fl = ["hvm", "dafoe", "mld", "lba", "med"]
+for i, t in enumerate(asist):
+    if t: make(f"cap{i+1}", t, fl[i % 5], [150, 120, 110, 100, 70][i % 5], [INK, BLK][i % 2], [3, -2, 4, 1, 2][i % 5], 10 + i)
