@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>TwinLine 3D · Visor de referencia</title>
+<style>
+  html,body{margin:0;height:100%;background:#0e1a20;font-family:Arial,Helvetica,sans-serif;color:#e8eef0;overflow:hidden}
+  #hud{position:absolute;top:16px;left:20px}
+  #hud h1{margin:0;font-size:20px;color:#fff}
+  #hud p{margin:4px 0 0;font-size:13px;color:#9fb3bb}
+  #panel{position:absolute;top:16px;right:20px;background:rgba(15,76,92,.85);padding:12px 16px;border-radius:8px;font-size:13px;min-width:220px}
+  #panel b{font-size:22px;display:block}
+  .lg{position:absolute;bottom:16px;left:20px;font-size:13px}
+  .lg span{display:inline-block;width:12px;height:12px;border-radius:2px;margin:0 6px 0 14px;vertical-align:-1px}
+  #alert{position:absolute;bottom:16px;right:20px;background:#E04646;color:#fff;padding:10px 14px;border-radius:8px;font-size:13px}
+</style>
+</head>
+<body>
+<div id="hud"><h1>TwinLine 3D · Línea SMT-2</h1><p>Electrónica Integrada del Pacífico · estado en tiempo real · actualización 2 s</p></div>
+<div id="panel">MTTR hoy<b id="mttr">15.4 min</b>Meta 17.0 min · Base 20.0 min<br>Máquinas en marcha: <span id="ok">12</span>/14</div>
+<div class="lg"><span style="background:#2DB37A"></span>Marcha<span style="background:#F2C744"></span>Paro<span style="background:#E04646"></span>Falla</div>
+<div id="alert">⚠ Falla en LD-2 · alerta enviada a Teams hace 6 s</div>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+r.setSize(innerWidth, innerHeight); r.setPixelRatio(devicePixelRatio); r.shadowMap.enabled = true;
+document.body.appendChild(r.domElement);
+const s = new THREE.Scene(); s.background = new THREE.Color(0x0e1a20); s.fog = new THREE.Fog(0x0e1a20, 40, 80);
+const cam = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 200);
+cam.position.set(-6, 13, 20);
+const ctl = new OrbitControls(cam, r.domElement); ctl.target.set(11, 0, 0); ctl.update();
+s.add(new THREE.HemisphereLight(0xcfe8ff, 0x223038, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(10, 20, 12); sun.castShadow = true;
+sun.shadow.camera.left = -20; sun.shadow.camera.right = 30; sun.shadow.camera.top = 15; sun.shadow.camera.bottom = -15; s.add(sun);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 30), new THREE.MeshStandardMaterial({ color: 0x2a3a42 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; s.add(floor);
+const grid = new THREE.GridHelper(60, 60, 0x3d525c, 0x33454e); grid.position.y = 0.01; s.add(grid);
+// banda transportadora
+const belt = new THREE.Mesh(new THREE.BoxGeometry(24, 0.25, 0.8), new THREE.MeshStandardMaterial({ color: 0x444c52, metalness: .4, roughness: .5 }));
+belt.position.set(10.5, 0.9, 0); belt.castShadow = true; s.add(belt);
+const M = ["LD-1","SPI-1","PP-1","PP-2","PP-3","PP-4","RF-1","AOI-1","LD-2","SPI-2","PP-5","RF-2","AOI-2","ULD-1"];
+const ST = { "PP-2": 0xF2C744, "LD-2": 0xE04646 };
+M.forEach((n, i) => {
+  const w = n.startsWith("RF") ? 2.4 : 1.4, h = n.startsWith("RF") ? 1.9 : (n.startsWith("PP") ? 1.7 : 1.4);
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, 1.8), new THREE.MeshStandardMaterial({ color: 0xd9dee2, metalness: .2, roughness: .6 }));
+  body.position.y = h / 2; body.castShadow = true; g.add(body);
+  const c = ST[n] ?? 0x2DB37A;
+  const tower = new THREE.Mesh(new THREE.CylinderGeometry(.12, .12, .5, 16), new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: .9 }));
+  tower.position.set(w / 2 - .25, h + .25, .6); g.add(tower);
+  const halo = new THREE.Mesh(new THREE.BoxGeometry(w + .12, .08, 1.92), new THREE.MeshBasicMaterial({ color: c }));
+  halo.position.y = .04; g.add(halo);
+  const cv = document.createElement("canvas"); cv.width = 256; cv.height = 64; const x = cv.getContext("2d");
+  x.fillStyle = "rgba(0,0,0,.55)"; x.fillRect(0, 0, 256, 64); x.fillStyle = "#fff"; x.font = "bold 34px Arial"; x.textAlign = "center"; x.fillText(n, 128, 44);
+  const lab = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv) })); lab.scale.set(1.6, .4, 1); lab.position.y = h + .95; g.add(lab);
+  g.position.set(i * 1.75 - 0.4 + (i > 6 ? .5 : 0) + (i > 11 ? .5 : 0), 0, 0); s.add(g);
+});
+(function loop() { r.render(s, cam); requestAnimationFrame(loop); })();
+window.__ready = true;
+</script>
+</body>
+</html>
